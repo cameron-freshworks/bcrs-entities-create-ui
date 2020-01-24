@@ -124,6 +124,7 @@ export default class Actions extends Mixins(FilingTemplateMixin, LegalApiMixin) 
     const filing = await this.buildFiling()
     await this.saveFiling(filing, true)
     this.setIsSavingResuming(false)
+    window.location.assign(this.authUrl)
   }
 
   /**
