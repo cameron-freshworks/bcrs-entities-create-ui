@@ -34,10 +34,10 @@ export default class LegalApiMixin extends Vue {
 
       // If have a filing id, update an existing filing
       if (filingId && filingId > 0) {
-        await this.updateFiling(isDraft, filing, filingId)
+        this.updateFiling(isDraft, filing, filingId)
       } else {
         // Set the filingId to store
-        const response = await this.createFiling(filing)
+        const response = await this.createFiling(isDraft, filing)
         // Assign a filing Id from the response to the state
         if (response && response.header) {
           this.setFilingId(response.header.filingId)
@@ -73,8 +73,14 @@ export default class LegalApiMixin extends Vue {
    * @param isDraft Boolean indicating if this filing is a draft.
    * @param data The object body of the request.
    */
-  private createFiling (data: object): Promise<any> {
-    return axios.post('', data).then(res => {
+  createFiling (isDraft: boolean, data: object): Promise<any> {
+    // Assign the url business identifier
+    let url = this.getBusinessIdentifier
+
+    // Append URL appropriately if Draft
+    if (isDraft) url += `?draft=true`
+
+    return axios.post(url, data).then(res => {
       if (!res) {
         throw new Error('invalid API response')
       }
@@ -87,7 +93,7 @@ export default class LegalApiMixin extends Vue {
    * @param data The object body of the request.
    * @param filingId Optional filing id if this resuming an existing draft
    */
-  private updateFiling (isDraft: boolean, data: object, filingId: number): Promise<any> {
+  updateFiling (isDraft: boolean, data: object, filingId: number): Promise<any> {
     // Assign the url business identifier
     let url = `${this.getBusinessIdentifier}/filings/`
 
@@ -105,7 +111,7 @@ export default class LegalApiMixin extends Vue {
    * Method to make a simple axios Get request.
    * @param filingId Optional filing id if this resuming an existing draft
    */
-  private getFiling (filingId: number): Promise<any> {
+  getFiling (filingId: number): Promise<any> {
     // Assign the url business identifier
     let url = `${this.getBusinessIdentifier}/filings/${filingId}`
 
