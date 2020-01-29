@@ -7,6 +7,7 @@ import mockRouter from './mockRouter'
 import { createLocalVue, mount } from '@vue/test-utils'
 
 import { LegalApiMixin } from '@/mixins'
+import any = jasmine.any;
 
 describe('LegalApiMixin', () => {
   let vm: LegalApiMixin
@@ -20,26 +21,66 @@ describe('LegalApiMixin', () => {
     jestStore.certifyState.certifiedBy = 'Mock Full Name'
     jestStore.certifyState.certifyFormValid = false
     jestStore.currentDate = '2012/01/29'
-    jestStore.defineCompanyStep.nameRequest = { nrNumber: 'NR1234567', entityType: }
+    jestStore.defineCompanyStep.nameRequest = { nrNumber: 'NR1234567', entityType: 'BC' }
+    jestStore.defineCompanyStep.businessContact = { email: 'mock@email.com', phone: '123-245-7891' }
+    jestStore.defineCompanyStep.nameRequest.filingId = null
 
     const header = {
       name: 'incorporationApplication',
-      certifiedBy: jestStore.certifyState.certifiedBy,
-      email: jestStore.defineCompanyStep.businessContact.email,
-      date: jestStore.currentDate
+      certifiedBy: 'Mock Full Name',
+      email: 'mock@email.com',
+      date: '2012/01/29'
     }
 
-    const incorporation = {
+    const incorporationApplication = {
       nameRequest: {
-        nrNumber: this.nrNumber,
-        legalType: this.legalType
+        nrNumber: 'NR1234567',
+        legalType: 'BC'
       },
       offices: {
-        registeredOffice: this.registeredOffice
+        registeredOffice: {
+          deliveryAddress: {
+            addressCity: 'someCity',
+            addressCountry: 'someCountry',
+            addressRegion: 'someRegion',
+            postalCode: 'somePostalCode',
+            streetAddress: 'someStreet'
+          },
+          mailingAddress: {
+            addressCity: 'someCity',
+            addressCountry: 'someCountry',
+            addressRegion: 'someRegion',
+            postalCode: 'somePostalCode',
+            streetAddress: 'someStreet'
+          }
+        },
+        recordsOffice: {
+          deliveryAddress: {
+            addressCity: 'someCity',
+            addressCountry: 'someCountry',
+            addressRegion: 'someRegion',
+            postalCode: 'somePostalCode',
+            streetAddress: 'someStreet'
+          },
+          mailingAddress: {
+            addressCity: 'someCity',
+            addressCountry: 'someCountry',
+            addressRegion: 'someRegion',
+            postalCode: 'somePostalCode',
+            streetAddress: 'someStreet'
+          }
+        }
       },
       contactPoint: {
-        email: this.email,
-        phone: this.phone
+        email: 'mock@email.com',
+        phone: '123-245-7891'
+      }
+    }
+
+    filing = {
+      filing: {
+        header: header,
+        incorporationApplication: incorporationApplication
       }
     }
   })
@@ -49,6 +90,15 @@ describe('LegalApiMixin', () => {
   })
 
   it('does something', () => {
-    vm.createFiling()
+    // vm.createFiling(filing)
+
+    // mock "save and file" endpoint
+    // sinon.stub(axios, 'post').withArgs('').returns(new Promise(resolve => resolve(filing)))
+  })
+
+  it('calls create filing when there is no filingId', () => {
+    vm.saveFiling(filing, true)
+
+    expect(vm.saveFiling).toHaveBeenCalled()
   })
 })

@@ -109,8 +109,10 @@ export default class Actions extends Mixins(FilingTemplateMixin, LegalApiMixin) 
    * @returns A promise (ie, this is an async method).
    */
   private async onClickSave (): Promise<void> {
+    console.log('Clicked')
     this.setIsSaving(true)
     const filing = await this.buildFiling()
+    console.log(filing)
     await this.saveFiling(filing, true)
     this.setIsSaving(false)
   }

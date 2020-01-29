@@ -31,13 +31,14 @@ export default class LegalApiMixin extends Vue {
   async saveFiling (filing: IncorporationFilingIF, isDraft: boolean): Promise<any> {
     try {
       let filingId = this.getFilingId
-
+      console.log('Function Called')
       // If have a filing id, update an existing filing
       if (filingId && filingId > 0) {
         this.updateFiling(isDraft, filing, filingId)
       } else {
         // Set the filingId to store
         const response = await this.createFiling(filing)
+
         // Assign a filing Id from the response to the state
         if (response && response.header) {
           this.setFilingId(response.header.filingId)
@@ -47,6 +48,7 @@ export default class LegalApiMixin extends Vue {
       }
     } catch (e) {
       if (e) {
+        console.log(e)
         // TODO:  Trigger some error dialog. Will catch any errors from the Api calls
       }
     }
