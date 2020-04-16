@@ -48,7 +48,6 @@ export default class LegalApiMixin extends Vue {
     const url = `businesses/${this.getBusinessIdentifier}/tasks`
     return axios.get(url)
       .then(res => {
-        console.log(res)
         // look at only the first task
         const filing = res?.data?.tasks[0]?.task?.filing
         const filingId = +filing?.header?.filingId
